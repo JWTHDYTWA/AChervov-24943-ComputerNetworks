@@ -3,7 +3,7 @@ import csv
 import re
 
 
-addresses = [
+ADDRESSES = [
     'google.com',
     'gosuslugi.ru',
     'youtube.com',
@@ -24,14 +24,13 @@ PATTERN_TIME = R'Среднее = (\d+)'
 def main():
     output = []
 
-    for address in addresses:
+    for address in ADDRESSES:
         print(f'Site: {address}')
         result = subprocess.run(
             ['ping', address],
             capture_output=True,
             text=True,
             encoding='CP866')
-        # print(result.stdout)
         ip = re.findall(PATTERN_IP, result.stdout)[0]
         print(ip)
         try:
