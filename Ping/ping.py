@@ -2,6 +2,7 @@ import subprocess
 import csv
 import re
 
+
 addresses = [
     'google.com',
     'gosuslugi.ru',
@@ -21,11 +22,15 @@ PATTERN_TIME = R'Среднее = (\d+)'
 
 
 def main():
-    output = [['Domain Name', 'IP', 'Packages received', 'RTT']]
+    output = []
 
     for address in addresses:
         print(f'Site: {address}')
-        result = subprocess.run(['ping', address], capture_output=True, text=True, encoding='CP866')
+        result = subprocess.run(
+            ['ping', address],
+            capture_output=True,
+            text=True,
+            encoding='CP866')
         # print(result.stdout)
         ip = re.findall(PATTERN_IP, result.stdout)[0]
         print(ip)
@@ -34,13 +39,27 @@ def main():
             print(packages)
             round_travel_time = re.findall(PATTERN_TIME, result.stdout)[0]
             print(round_travel_time)
-            output.append([address, ip, packages[0], round_travel_time])
+            output.append({
+                'Domain Name': address,
+                'IP': ip,
+                'Packages received': packages[0],
+                'RTT': round_travel_time
+                })
         except Exception as e:
             print('No packages received')
-            output.append([address, ip, 0, 'NaN'])
+            output.append({
+                'Domain Name': address,
+                'IP': ip,
+                'Packages received': 0,
+                'RTT': 'NaN'
+                })
 
     with open('pings.csv', 'w') as file:
-        csv_writer = csv.writer(file, lineterminator='\n')
+        csv_writer = csv.DictWriter(
+            file,
+            fieldnames=['Domain Name', 'IP', 'Packages received', 'RTT'],
+            lineterminator='\n')
+        csv_writer.writeheader()
         csv_writer.writerows(output)
 
 
