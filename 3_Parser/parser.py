@@ -2,10 +2,11 @@ import argparse
 import os
 import csv
 import re
+import asyncio
 
 from intspan import intspan
-
 from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright, BrowserContext
 
 root_dir = os.path.dirname(__file__)
 screen_path = os.path.join(root_dir, 'screen.jpg')
@@ -17,6 +18,15 @@ url_meta_trunc = R'^(/card/[^/]+/(\d+))'
 def price_to_int(text: str):
     text = ''.join(filter(str.isdigit, text))
     return int(text)
+
+async def scrape_page(context: BrowserContext, search_text, page_num):
+    page = context.new_page()
+    ...
+
+async def scrape_pages(context: BrowserContext, search_text, page_nums):
+    tasks = [scrape_page(context, search_text, page_n) for page_n in page_nums]
+    results = await asyncio.gather(*tasks)
+    return results
 
 
 def main():
