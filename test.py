@@ -1,2 +1,3 @@
-string = '44.55'
-print(float(string))
+import asyncpg
+
+print(asyncpg.__version__)
