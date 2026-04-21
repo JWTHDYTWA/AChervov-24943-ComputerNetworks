@@ -3,6 +3,7 @@ EXPOSE 8000
 
 WORKDIR /home/server
 COPY . .
+RUN echo 'Acquire::Retries "32";' > /etc/apt/apt.conf.d/80-retries
 RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install-deps
 RUN playwright install firefox
